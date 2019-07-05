@@ -23,33 +23,6 @@ class App extends Component {
 		}
 	}
 
-	onGenerateData = () => {
-		let tasks = [
-			{
-				id: this.generateID(),
-				name: 'học angular',
-				status: true
-			},
-			{
-				id: this.generateID(),
-				name: 'viva vivu',
-				status: false
-			},
-			{
-				id: this.generateID(),
-				name: 'học angular',
-				status: true
-			}
-		]
-
-		localStorage.setItem('tasks', JSON.stringify(tasks))
-
-		this.setState({
-				tasks : tasks
-		})
-		
-	}
-
 	s4() {
 		return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 	}
@@ -70,9 +43,24 @@ class App extends Component {
 		})
 	}
 
+	onsubmit = (data) => {
+		data.id = this.generateID();
+		let { tasks } = this.state;
+		tasks.push(data);
+		this.setState({
+				tasks : tasks
+		})
+		
+		localStorage.setItem('tasks', JSON.stringify(tasks))
+		
+	}
+
     render() {
     	const { tasks, isDisplayForm } = this.state
-    	var elmForm = isDisplayForm ? <TaskForm onCloseForm = { this.onCloseForm } /> : '';
+    	var elmForm = isDisplayForm ? 
+    					<TaskForm 
+    						onCloseForm = { this.onCloseForm } 
+    						onSubmit={ this.onsubmit }/> : '';
         return (
         	<div className="container">
         		<div className="text-center">
@@ -82,7 +70,7 @@ class App extends Component {
                     <div 
                     	className= { isDisplayForm ? 
                     				'col-xs-12 col-sm-12 col-md-4 col-lg-4' : 
-                    				''}>
+                    				'' }>
                     	{/*form*/}
                     	{ elmForm }
                     </div>
@@ -97,13 +85,6 @@ class App extends Component {
 	                        onClick={ this.onToggleForm }>
                             <span className="fa fa-plus mr-5"></span>
                             Thêm Công Việc
-                        </button>
-
-                        <button 
-	                        type="button" 
-	                        className="btn btn-danger ml-5"
-	                        onClick={ this.onGenerateData }>
-                            Generate Data
                         </button>
 
                         {/*search - sort*/}
