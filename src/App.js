@@ -28,7 +28,8 @@ class App extends Component {
 	}
 
 	generateID() {
-		return this.s4() + this.s4() + this.s4() + '-' + this.s4() + this.s4() + this.s4(); 
+		return this.s4() + this.s4() + this.s4() + '-' + this.s4() + this.s4() + this.s4() + 
+		this.s4() + this.s4() + this.s4() + '-' + this.s4() + this.s4() + this.s4() ; 
 	}
 
 	onToggleForm = () => {
@@ -53,6 +54,48 @@ class App extends Component {
 		
 		localStorage.setItem('tasks', JSON.stringify(tasks))
 		
+	}
+
+	onUpdateStatus = (id) => {
+		const { tasks } = this.state;
+		const index = this.findIndex(id);
+		if( index !== -1) {
+			tasks[index].status = !tasks[index].status
+			this.setState({
+				tasks: tasks
+			})
+			localStorage.setItem('tasks', JSON.stringify(tasks));
+		}
+
+
+	}
+
+	onDelete = (id) => {
+		const { tasks, isDisplayForm } = this.state;
+		const index = this.findIndex(id);
+		if ( index !== -1) {
+			tasks.splice(index, 1);
+			this.setState({
+				tasks: tasks
+			})
+			localStorage.setItem('tasks', JSON.stringify(tasks));
+		}
+
+		if ( isDisplayForm ) {
+			this.onCloseForm();
+		}
+
+	}
+
+	findIndex = (id) => {
+		const { tasks } = this.state;
+		let result = -1;
+		tasks.forEach(( task, index ) => {
+			if(task.id === id) {
+				result = index;
+			}
+		})
+		return result
 	}
 
     render() {
@@ -93,6 +136,8 @@ class App extends Component {
 			                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			                	<TaskList
 			                		tasks = { tasks }
+			                		onUpdateStatus = { this.onUpdateStatus }
+			                		onDelete = { this.onDelete }
 			                	/>
 			                </div>
 			            </div>
