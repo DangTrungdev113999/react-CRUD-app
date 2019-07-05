@@ -4,8 +4,23 @@ class TaskForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
             name: '',
             status: false
+        }
+    }
+
+    componentWillMount() {
+        const { task } = this.props;
+
+        // console.log(task)
+        if (task) {
+
+            this.setState({
+                id:  task.id,
+                name:  task.name,
+                status:  task.status
+            })
         }
     }
 
@@ -43,12 +58,12 @@ class TaskForm extends Component {
     }
 
     render() {
-        // const {  } = this.props;
+        const { id } = this.state;
         return (
 			<div className="panel panel-warning">
                 <div className="panel-heading">
                     <h3 className="panel-title">
-                        Thêm Công Việc
+                       { id !== '' ? "Cập nhật công việc" : "Thêm công việc" }
                         <span
                             className="fa fa-times-circle text-right"
                             onClick={ this.onCloseForm }

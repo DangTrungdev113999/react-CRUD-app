@@ -9,13 +9,14 @@ class App extends Component {
 		super(props);
 		this.state = {
 			tasks: [],
-			isDisplayForm: false
+			isDisplayForm: false,
+			taskEditteing: null
 		}
 	}
 
 	componentWillMount() {
 		if(localStorage && localStorage.getItem('tasks')) {
-			let tasks = JSON.parse(localStorage.getItem('tasks'));
+			const tasks = JSON.parse(localStorage.getItem('tasks'));
 			this.setState({
 				tasks : tasks
 			})
@@ -34,22 +35,35 @@ class App extends Component {
 
 	onToggleForm = () => {
 		this.setState({
-			isDisplayForm: !this.state.isDisplayForm
+			isDisplayForm: !this.state.isDisplayForm,
+			taskEditteing: null
 		})
 	}
 
 	onCloseForm = () => {
 		this.setState({
-			isDisplayForm: !this.state.isDisplayForm
+			isDisplayForm: false
 		})
 	}
 
-	onsubmit = (data) => {
-		data.id = this.generateID();
-		let { tasks } = this.state;
-		tasks.push(data);
+	onShowForm = () => {
 		this.setState({
-				tasks : tasks
+			isDisplayForm: true
+		})
+	}
+
+	onSubmit = (data) => {
+		let { tasks } = this.state;
+
+		if (data.id === '') {
+			data.id = this.generateID();
+			tasks.push(data);
+		} else {
+			const index = this.findIndex(data.id);
+			tasks[index] = data
+		}
+		this.setState({
+			tasks : tasks
 		})
 		
 		localStorage.setItem('tasks', JSON.stringify(tasks))
@@ -71,7 +85,7 @@ class App extends Component {
 	}
 
 	onDelete = (id) => {
-		const { tasks, isDisplayForm } = this.state;
+		const { tasks } = this.state;
 		const index = this.findIndex(id);
 		if ( index !== -1) {
 			tasks.splice(index, 1);
@@ -81,10 +95,23 @@ class App extends Component {
 			localStorage.setItem('tasks', JSON.stringify(tasks));
 		}
 
-		if ( isDisplayForm ) {
-			this.onCloseForm();
+		this.onCloseForm();
+
+	}
+
+	onUpdate = (id) => {
+		this.onShowForm();
+		const { tasks } = this.state;
+		const index = this.findIndex(id);
+		// console.log(index)
+		if ( index !== -1) {
+			const taskEditteing = tasks[index];
+			this.setState({
+				taskEditteing: taskEditteing
+			})
 		}
 
+		// console.log(this.state.taskEditteing);
 	}
 
 	findIndex = (id) => {
@@ -99,11 +126,14 @@ class App extends Component {
 	}
 
     render() {
-    	const { tasks, isDisplayForm } = this.state
+    	const { tasks, isDisplayForm, taskEditteing } = this.state
     	var elmForm = isDisplayForm ? 
-    					<TaskForm 
-    						onCloseForm = { this.onCloseForm } 
-    						onSubmit={ this.onsubmit }/> : '';
+	    					<TaskForm 
+	    						onCloseForm = { this.onCloseForm } 
+	    						onSubmit={ this.onSubmit }
+	    						task = { taskEditteing  }
+	    					/> :
+	    					 '';
         return (
         	<div className="container">
         		<div className="text-center">
@@ -138,6 +168,7 @@ class App extends Component {
 			                		tasks = { tasks }
 			                		onUpdateStatus = { this.onUpdateStatus }
 			                		onDelete = { this.onDelete }
+			                		onUpdate = { this.onUpdate }
 			                	/>
 			                </div>
 			            </div>
