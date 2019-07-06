@@ -12,7 +12,6 @@ class TaskForm extends Component {
 
     componentWillMount() {
         const { task } = this.props;
-
         // console.log(task)
         if (task) {
 
@@ -23,6 +22,25 @@ class TaskForm extends Component {
             })
         }
     }
+
+    componentWillReceiveProps(nextProps) {
+        if( nextProps && nextProps.task ) {
+            const { task } = nextProps
+            this.setState({
+                id:  task.id,
+                name:  task.name,
+                status:  task.status
+            })
+        } else if ( !nextProps.task ) {
+            this.setState({
+                id: '',
+                name: '',
+                status: false
+            })
+        }
+    }
+
+
 
     onCloseForm = () => {
         this.props.onCloseForm();
