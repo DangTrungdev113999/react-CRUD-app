@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 
-class Sort extends Component {
+class TaskControlSort extends Component {
+
+    onSort = (sortBy, sortValue) => { 
+        this.props.onSort(sortBy, sortValue)
+    }
 
     render() {
+        const { sortBy, sortValue } = this.props
+
         return (
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className="dropdown">
@@ -17,18 +23,24 @@ class Sort extends Component {
                         Sắp Xếp <span className="fa fa-caret-square-o-down ml-5"></span>
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li >
+                        <li onClick = { () => this.onSort('name', 1) }>
                             <a
                                 role="button"
+                                className = { sortBy === 'name' && 
+                                                sortValue === 1 ? 
+                                                'sort_selected' : '' }
                             >
                                 <span className="fa fa-sort-alpha-asc pr-5">
                                     Tên A-Z
                                 </span>
                             </a>
                         </li>
-                        <li>
+                        <li onClick = { () => this.onSort('name', -1) }>
                             <a
                                 role="button"
+                                className = { sortBy === 'name' && 
+                                                sortValue === -1 ? 
+                                                'sort_selected' : '' }
                             >
                                 <span className="fa fa-sort-alpha-desc pr-5">
                                     Tên Z-A
@@ -36,16 +48,22 @@ class Sort extends Component {
                             </a>
                         </li>
                         <li role="separator" className="divider"></li>
-                        <li>
+                        <li onClick = { () => this.onSort('status', 1) }>
                             <a
                                 role="button"
+                                className = { sortBy === 'status' && 
+                                                sortValue === 1 ? 
+                                                'sort_selected' : '' }
                             >
                                 Trạng Thái Kích Hoạt
                             </a>
                         </li>
-                        <li>
+                        <li onClick = { () => this.onSort('status', -1) }>
                             <a
                                 role="button"
+                                className = { sortBy === 'status' && 
+                                                sortValue === -1 ? 
+                                                'sort_selected' : '' }
                             >
                                 Trạng Thái Ẩn
                             </a>
@@ -57,4 +75,4 @@ class Sort extends Component {
     }
 }
 
-export default Sort;
+export default TaskControlSort;

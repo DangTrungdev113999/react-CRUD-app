@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import TaskForm from './components/TaskForm';
-import Control from './components/Control';
+import TaskControl from './components/TaskControl';
 import TaskList from './components/TaskList';
 
 class App extends Component {
@@ -14,7 +14,10 @@ class App extends Component {
 			filter: {
 				name: '',
 				status: -1
-			}
+			},
+			keyword: '',
+			sortBy: 'name',
+			sortValue: 1
 		}
 	}
 
@@ -147,10 +150,27 @@ class App extends Component {
 		})
 	}
 
-    render() {
-    	let { tasks, isDisplayForm, taskEditteing, filter } = this.state
+	onSearch = (keyword) => {
+		if (keyword) {
+			this.setState({
+				keyword: keyword.toLowerCase()
+			})
+		}
+	}
 
-    	if(filter) {
+	onSort = (sortBy, sortValue) => {
+		if(sortBy && sortValue) {
+			this.setState({
+				sortBy: sortBy,
+				sortValue: sortValue
+			})
+		}  
+	}
+
+    render() {
+    	let { tasks, isDisplayForm, taskEditteing, filter, keyword, sortBy, sortValue } = this.state
+
+    	if( filter ) {
     		if(filter.name) {
     			tasks = tasks.filter((task) => {
     				return task.name.toLowerCase().indexOf(filter.name) !== -1;
@@ -165,6 +185,27 @@ class App extends Component {
     			}
     		})
     	}
+
+    	if ( keyword ) {
+    		tasks = tasks.filter((task) => {
+    			return task.name.toLowerCase().indexOf(keyword) !== -1;
+    		})
+    	}
+
+    	if ( sortBy === 'name') {
+	    	tasks.sort((a,b) => {
+	    		if (a.name > b.name) return sortValue
+	    		else if (a.name < b.name) return -sortValue
+	    		else return 0
+	    	})
+    	} else {
+			tasks.sort((a,b) => {
+    		if (a.status > b.status) return -sortValue
+    		else if (a.status < b.status) return sortValue
+    		else return 0
+	    	})
+    	}
+
 
     	var elmForm = isDisplayForm ? 
 	    					<TaskForm 
@@ -200,7 +241,12 @@ class App extends Component {
                         </button>
 
                         {/*search - sort*/}
-                        <Control/>
+                        <TaskControl
+                        	onSearch = { this.onSearch }
+                        	sortBy = { sortBy }
+                        	sortValue = { sortValue }
+                        	onSort = { this.onSort }
+                        />
 			            <div className="row mt-15">
 			                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			                	<TaskList
