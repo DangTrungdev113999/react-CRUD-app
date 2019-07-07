@@ -3,6 +3,7 @@ import './App.css';
 import TaskForm from './components/TaskForm';
 import TaskControl from './components/TaskControl';
 import TaskList from './components/TaskList';
+import { findIndex } from 'lodash';
 
 class App extends Component {
 	constructor(props) {
@@ -88,7 +89,10 @@ class App extends Component {
 
 	onUpdateStatus = (id) => {
 		const { tasks } = this.state;
-		const index = this.findIndex(id);
+		// const index = this.findIndex(id);
+		const index = findIndex(tasks, (task) => {
+			return task.id === id
+		})
 		if( index !== -1) {
 			tasks[index].status = !tasks[index].status
 			this.setState({
